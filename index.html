@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rekap Siswa Selesai - Projek IPAS</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f1f5f9;
+        color: #1e293b;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #0f172a, #1e3a8a);
+        color: white;
+        padding: 30px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .header h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+    }
+
+    .header p {
+        margin: 0;
+        opacity: .9;
+    }
+
+    .info {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.07);
+    }
+
+    .info h2 {
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .info-box {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .info-box .label {
+        display: block;
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 7px;
+    }
+
+    .info-box strong {
+        font-size: 24px;
+    }
+
+    .table-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.07);
+        overflow-x: auto;
+    }
+
+    .table-box h2 {
+        margin-top: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+    }
+
+    th {
+        background: #1e3a8a;
+        color: white;
+        padding: 14px;
+        text-align: center;
+    }
+
+    td {
+        padding: 13px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: center;
+    }
+
+    td:nth-child(2) {
+        text-align: left;
+    }
+
+    tr:hover {
+        background: #f8fafc;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .badge-selesai {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .nilai {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1d4ed8;
+    }
+
+    .progress-wrapper {
+        width: 100%;
+        background: #e2e8f0;
+        height: 14px;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 100%;
+        background: #16a34a;
+        border-radius: 20px;
+    }
+
+    .progress-text {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #475569;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 50px 20px;
+        color: #64748b;
+    }
+
+    .empty .icon {
+        font-size: 50px;
+        margin-bottom: 15px;
+    }
+
+    .buttons {
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    button {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .btn-print {
+        background: #1e3a8a;
+        color: white;
+    }
+
+    .btn-refresh {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    @media print {
+        body {
+            background: white;
+        }
+
+        .container {
+            margin: 0;
+            max-width: none;
+        }
+
+        .buttons {
+            display: none;
+        }
+
+        .header {
+            color: black;
+            background: white;
+            border: 2px solid #1e3a8a;
+        }
+
+        .table-box,
+        .info {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .container {
+            margin: 10px auto;
+            padding: 10px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>📊 Rekap Penyelesaian LMS</h1>
+        <p>Projek IPAS — Makhluk Hidup dan Lingkungannya</p>
+    </div>
+
+    <div class="info">
+        <h2>Ringkasan</h2>
+
+        <div class="info-grid">
+
+            <div class="info-box">
+                <span class="label">Siswa Selesai</span>
+                <strong id="jumlahSiswa">0</strong>
+            </div>
+
+            <div class="info-box">
+                <span class="label">Tahap LMS</span>
+                <strong>7 / 7</strong>
+            </div>
+
+            <div class="info-box">
+                <span class="label">Status</span>
+                <strong style="color:#16a34a;">Selesai</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="table-box">
+
+        <h2>Daftar Siswa yang Sudah Selesai</h2>
+
+        <div id="hasilLaporan"></div>
+
+    </div>
+
+    <div class="buttons">
+        <button class="btn-print" onclick="window.print()">
+            🖨️ Cetak / Simpan PDF
+        </button>
+
+        <button class="btn-refresh" onclick="tampilkanLaporan()">
+            🔄 Perbarui Data
+        </button>
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   KONFIGURASI
+========================================================= */
+
+const STORAGE_KEY = "edusmk_ipas_progress_v4";
+const IDENTITY_KEY = "edusmk_ipas_identity";
+
+
+/* =========================================================
+   AMBIL DATA LMS
+========================================================= */
+
+function ambilDataLMS() {
+
+    let data = {};
+
+    try {
+        data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch (error) {
+        data = {};
+    }
+
+    return {
+        lessons: data.lessons || {
+            1: false,
+            2: false,
+            3: false,
+            4: false
+        },
+
+        videoCompleted: data.videoCompleted === true,
+
+        lkpdCompleted: data.lkpdCompleted === true,
+
+        quizScore:
+            typeof data.quizScore === "number"
+                ? data.quizScore
+                : null
+    };
+}
+
+
+/* =========================================================
+   AMBIL IDENTITAS SISWA
+========================================================= */
+
+function ambilIdentitas() {
+
+    let identity = {};
+
+    try {
+        identity =
+            JSON.parse(localStorage.getItem(IDENTITY_KEY)) || {};
+    } catch (error) {
+        identity = {};
+    }
+
+    return identity;
+}
+
+
+/* =========================================================
+   CEK APAKAH LMS SUDAH SELESAI 100%
+========================================================= */
+
+function cekSelesai(data) {
+
+    const materiSelesai =
+        data.lessons[1] === true &&
+        data.lessons[2] === true &&
+        data.lessons[3] === true &&
+        data.lessons[4] === true;
+
+    const videoSelesai =
+        data.videoCompleted === true;
+
+    const lkpdSelesai =
+        data.lkpdCompleted === true;
+
+    const kuisSelesai =
+        data.quizScore !== null;
+
+    return (
+        materiSelesai &&
+        videoSelesai &&
+        lkpdSelesai &&
+        kuisSelesai
+    );
+}
+
+
+/* =========================================================
+   PREDIKAT NILAI
+========================================================= */
+
+function tentukanPredikat(nilai) {
+
+    if (nilai >= 90) {
+        return "Sangat Baik";
+    }
+
+    if (nilai >= 80) {
+        return "Baik";
+    }
+
+    if (nilai >= 70) {
+        return "Cukup";
+    }
+
+    return "Perlu Bimbingan";
+}
+
+
+/* =========================================================
+   TAMPILKAN LAPORAN
+========================================================= */
+
+function tampilkanLaporan() {
+
+    const data = ambilDataLMS();
+    const identity = ambilIdentitas();
+
+    const hasil = document.getElementById("hasilLaporan");
+    const jumlahSiswa = document.getElementById("jumlahSiswa");
+
+    /*
+       HANYA siswa yang menyelesaikan seluruh
+       7 tahap yang ditampilkan.
+    */
+
+    if (!cekSelesai(data)) {
+
+        jumlahSiswa.textContent = "0";
+
+        hasil.innerHTML = `
+            <div class="empty">
+
+                <div class="icon">📋</div>
+
+                <h3>Belum Ada Siswa yang Selesai</h3>
+
+                <p>
+                    Rekap hanya menampilkan siswa yang telah
+                    menyelesaikan seluruh tahapan LMS.
+                </p>
+
+                <p>
+                    <strong>
+                        4 materi + video + LKPD + kuis
+                    </strong>
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /* Jika identitas belum diisi */
+
+    const nama =
+        identity.nama ||
+        "Siswa";
+
+    const kelas =
+        identity.kelas ||
+        "-";
+
+    const noAbsen =
+        identity.absen ||
+        "-";
+
+    const sekolah =
+        identity.sekolah ||
+        "-";
+
+    const nilai =
+        data.quizScore;
+
+
+    jumlahSiswa.textContent = "1";
+
+
+    hasil.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>No. Absen</th>
+                    <th>Nilai Kuis</th>
+                    <th>Progres</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>1</td>
+
+                    <td>
+                        <strong>${escapeHTML(nama)}</strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(kelas)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(noAbsen)}
+                    </td>
+
+                    <td>
+
+                        <span class="nilai">
+                            ${nilai}
+                        </span>
+
+                        <br>
+
+                        <small>
+                            ${tentukanPredikat(nilai)}
+                        </small>
+
+                    </td>
+
+                    <td style="min-width:180px;">
+
+                        <div class="progress-wrapper">
+
+                            <div class="progress-bar"></div>
+
+                        </div>
+
+                        <div class="progress-text">
+                            100% — 7 / 7 tahap
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge badge-selesai">
+                            ✓ SELESAI
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <div style="
+            margin-top:20px;
+            padding:15px;
+            background:#f8fafc;
+            border-radius:10px;
+            font-size:14px;
+            color:#475569;
+        ">
+
+            <strong>Sekolah:</strong>
+            ${escapeHTML(sekolah)}
+
+            <br><br>
+
+            <strong>Ketuntasan LMS:</strong>
+            100%
+
+            <br>
+
+            <strong>Tahapan selesai:</strong>
+            7 dari 7
+
+            <br>
+
+            <strong>Status:</strong>
+            Seluruh aktivitas LMS telah diselesaikan.
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   PENGAMAN TEKS
+========================================================= */
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   UPDATE OTOMATIS JIKA DATA LMS BERUBAH
+========================================================= */
+
+window.addEventListener("storage", function(event) {
+
+    if (
+        event.key === STORAGE_KEY ||
+        event.key === IDENTITY_KEY
+    ) {
+
+        tampilkanLaporan();
+
+    }
+
+});
+
+
+/* =========================================================
+   JALANKAN SAAT HALAMAN DIBUKA
+========================================================= */
+
+tampilkanLaporan();
+
+</script>
+
+</body>
+</html>
